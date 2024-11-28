@@ -7,13 +7,18 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class NewsViewController: UIViewController {
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .white
+        setupAppearance()
     }
 
+    func setupAppearance() {
+        
+    }
 
 }
 
