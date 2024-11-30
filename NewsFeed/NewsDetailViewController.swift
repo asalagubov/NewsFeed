@@ -37,7 +37,27 @@ class NewsDetailViewController: UIViewController {
         descriptionLabel.text = newsItem.description
         descriptionLabel.numberOfLines = 0
         
-        let stackView = UIStackView(arrangedSubviews: [titleLabel, descriptionLabel])
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 12
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        if let imageUrlString = newsItem.titleImageUrl, let url = URL(string: imageUrlString) {
+            URLSession.shared.dataTask(with: url) { data, _, _ in
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        imageView.image = image
+                    }
+                } else {
+                    imageView.image = UIImage(named: "placeholder")
+                }
+            }.resume()
+        } else {
+            imageView.image = UIImage(named: "placeholder")
+        }
+        
+        let stackView = UIStackView(arrangedSubviews: [imageView, titleLabel, descriptionLabel])
         stackView.axis = .vertical
         stackView.spacing = 16
         
@@ -45,9 +65,11 @@ class NewsDetailViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
+            imageView.heightAnchor.constraint(equalToConstant: 200),
             stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
     }
+    
 }

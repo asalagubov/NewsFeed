@@ -81,6 +81,8 @@ extension NewsViewController: UICollectionViewDelegate {
         let selectedNews = viewModel.news[indexPath.item]
         let detailVC = NewsDetailViewController(newsItem: selectedNews)
         navigationController?.pushViewController(detailVC, animated: true)
+        navigationController?.navigationBar.tintColor = .black
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
 }
 

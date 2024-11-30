@@ -23,8 +23,14 @@ class NewsCell: UICollectionViewCell {
     }
     
     func setupView() {
+        contentView.layer.cornerRadius = 12
+        contentView.layer.borderWidth = 1
+        contentView.layer.borderColor = UIColor.lightGray.cgColor
+        contentView.layer.masksToBounds = true
+        
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 12 
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
