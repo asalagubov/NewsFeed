@@ -37,6 +37,11 @@ class NewsDetailViewController: UIViewController {
         descriptionLabel.text = newsItem.description
         descriptionLabel.numberOfLines = 0
         
+        let dateLabel = UILabel()
+        dateLabel.font = UIFont.systemFont(ofSize: 12, weight: .light)
+        dateLabel.textColor = .gray
+        dateLabel.text = DateUtils.formatDate(newsItem.publishedDate)
+        
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -57,7 +62,7 @@ class NewsDetailViewController: UIViewController {
             imageView.image = UIImage(named: "placeholder")
         }
         
-        let stackView = UIStackView(arrangedSubviews: [imageView, titleLabel, descriptionLabel])
+        let stackView = UIStackView(arrangedSubviews: [imageView, titleLabel, descriptionLabel, dateLabel])
         stackView.axis = .vertical
         stackView.spacing = 16
         
@@ -67,8 +72,8 @@ class NewsDetailViewController: UIViewController {
         NSLayoutConstraint.activate([
             imageView.heightAnchor.constraint(equalToConstant: 200),
             stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 6),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -6)
         ])
     }
     
