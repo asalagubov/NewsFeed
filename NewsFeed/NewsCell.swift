@@ -11,6 +11,7 @@ import UIKit
 class NewsCell: UICollectionViewCell {
     private let imageView = UIImageView()
     private let titleLabel = UILabel()
+    // Добавить лоадер для загрузки изображений
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -45,4 +46,23 @@ class NewsCell: UICollectionViewCell {
             titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -8)
         ])
     }
+    
+    func configure(with newsItem: NewsItem) {
+        titleLabel.text = newsItem.title
+        
+        if let imageUrlString = newsItem.titleImageUrl, let url = URL(string: imageUrlString) {
+            
+            URLSession.shared.dataTask(with: url) { data, _, _ in
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self.imageView.image = image
+                        
+                    }
+                }
+            }.resume()
+        } else {
+            imageView.image = UIImage(named: "placeholder")
+        }
+    }
+    
 }
