@@ -11,7 +11,7 @@ import UIKit
 class NewsCell: UICollectionViewCell {
     private let imageView = UIImageView()
     private let titleLabel = UILabel()
-    // Добавить лоадер для загрузки изображений
+    private let activityIndicator = UIActivityIndicatorView(style: .medium)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,8 +31,12 @@ class NewsCell: UICollectionViewCell {
         titleLabel.numberOfLines = 2
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        
         contentView.addSubview(imageView)
         contentView.addSubview(titleLabel)
+        contentView.addSubview(activityIndicator)
         
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -43,12 +47,16 @@ class NewsCell: UICollectionViewCell {
             titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
-            titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -8)
+            titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -8),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: imageView.centerYAnchor)
         ])
     }
     
     func configure(with newsItem: NewsItem) {
         titleLabel.text = newsItem.title
+        activityIndicator.startAnimating()
         
         if let imageUrlString = newsItem.titleImageUrl, let url = URL(string: imageUrlString) {
             
@@ -56,12 +64,14 @@ class NewsCell: UICollectionViewCell {
                 if let data = data, let image = UIImage(data: data) {
                     DispatchQueue.main.async {
                         self.imageView.image = image
+                        self.activityIndicator.stopAnimating()
                         
                     }
                 }
             }.resume()
         } else {
             imageView.image = UIImage(named: "placeholder")
+            activityIndicator.stopAnimating()
         }
     }
     

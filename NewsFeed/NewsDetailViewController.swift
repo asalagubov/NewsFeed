@@ -27,7 +27,7 @@ class NewsDetailViewController: UIViewController {
     }
     
     func setupAppearance() {
-       //TODO
+        //TODO
     }
     
 }
