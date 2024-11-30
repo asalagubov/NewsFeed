@@ -30,6 +30,7 @@ class NewsViewController: UIViewController {
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.register(NewsCell.self, forCellWithReuseIdentifier: "NewsCell")
         collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.prefetchDataSource = self
         collectionView.backgroundColor = .white
         
@@ -74,6 +75,15 @@ extension NewsViewController: UICollectionViewDataSource {
         return cell
     }
 }
+
+extension NewsViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedNews = viewModel.news[indexPath.item]
+        let detailVC = NewsDetailViewController(newsItem: selectedNews)
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
+}
+
 
 extension NewsViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {

@@ -56,23 +56,24 @@ class NewsCell: UICollectionViewCell {
     
     func configure(with newsItem: NewsItem) {
         titleLabel.text = newsItem.title
+        imageView.image = nil
         activityIndicator.startAnimating()
         
         if let imageUrlString = newsItem.titleImageUrl, let url = URL(string: imageUrlString) {
-            
-            URLSession.shared.dataTask(with: url) { data, _, _ in
-                if let data = data, let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
+            URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.activityIndicator.stopAnimating()
+                    if let data = data, let image = UIImage(data: data) {
                         self.imageView.image = image
-                        self.activityIndicator.stopAnimating()
-                        
+                    } else {
+                        self.imageView.image = UIImage(named: "placeholder")
                     }
                 }
             }.resume()
         } else {
-            imageView.image = UIImage(named: "placeholder")
             activityIndicator.stopAnimating()
+            imageView.image = UIImage(named: "placeholder")
         }
     }
-    
 }
