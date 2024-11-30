@@ -47,14 +47,22 @@ class NewsViewController: UIViewController {
     }
     
     private func createLayout() -> UICollectionViewLayout {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                              heightDimension: .absolute(220))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 1, bottom: 8, trailing: 1)
+        let isPad = UIDevice.current.userInterfaceIdiom == .pad
         
+        let itemHeight: CGFloat = isPad ? 300 : 220
+        let itemWidthFraction: CGFloat = isPad ? 0.5 : 1.0
+
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(itemWidthFraction),
+                                               heightDimension: .absolute(itemHeight))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 1, bottom: 8, trailing: 1)
+
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .absolute(220))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+                                                heightDimension: .absolute(itemHeight + 16))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item, item])
+        
+        group.interItemSpacing = .fixed(16)
         
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 16, leading: 6, bottom: 16, trailing: 6)
