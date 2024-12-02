@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import WebKit
 
 class NewsDetailViewController: UIViewController {
     private let newsItem: NewsItem
@@ -62,7 +63,16 @@ class NewsDetailViewController: UIViewController {
             imageView.image = UIImage(named: "placeholder")
         }
         
-        let stackView = UIStackView(arrangedSubviews: [imageView, titleLabel, descriptionLabel, dateLabel])
+        let moreButton = UIButton(type: .system)
+        moreButton.setTitle("Подробнее", for: .normal)
+        moreButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        moreButton.addTarget(self, action: #selector(openFullNews), for: .touchUpInside)
+        moreButton.layer.cornerRadius = 12
+        moreButton.layer.borderWidth = 1
+        moreButton.layer.masksToBounds = false
+        moreButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        let stackView = UIStackView(arrangedSubviews: [imageView, titleLabel, descriptionLabel, moreButton, dateLabel])
         stackView.axis = .vertical
         stackView.spacing = 16
         
@@ -77,4 +87,17 @@ class NewsDetailViewController: UIViewController {
         ])
     }
     
+    @objc private func openFullNews() {
+        guard let url = URL(string: newsItem.fullUrl) else {
+            let alert = UIAlertController(title: "Ошибка", message: "Некорректная ссылка.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "ОК", style: .default))
+            present(alert, animated: true)
+            return
+        }
+        
+        let webVC = WebViewController(url: url)
+        navigationController?.pushViewController(webVC, animated: true)
+        navigationController?.navigationBar.tintColor = .black
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+    }
 }
