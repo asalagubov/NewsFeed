@@ -75,35 +75,15 @@ class NewsCell: UICollectionViewCell {
         ])
     }
     
-    func configure(with newsItem: NewsItem) {
+    func configure(with newsItem: NewsItem, viewModel: NewsViewModel) {
         titleLabel.text = newsItem.title
         dateLabel.text = DateUtils.formatDate(newsItem.publishedDate)
         activityIndicator.startAnimating()
         imageView.image = nil
         
-        if let imageUrlString = newsItem.titleImageUrl, let url = URL(string: imageUrlString) {
-            let request = URLRequest(url: url)
-            
-            if let cachedResponse = URLCache.shared.cachedResponse(for: request),
-               let cachedImage = UIImage(data: cachedResponse.data) {
-                self.imageView.image = cachedImage
-                self.activityIndicator.stopAnimating()
-            } else {
-                URLSession.shared.dataTask(with: url) { [weak self] data, response, _ in
-                    guard let self = self, let data = data, let image = UIImage(data: data), let response = response else { return }
-                    
-                    let cachedResponse = CachedURLResponse(response: response, data: data)
-                    URLCache.shared.storeCachedResponse(cachedResponse, for: request)
-                    
-                    DispatchQueue.main.async {
-                        self.imageView.image = image
-                        self.activityIndicator.stopAnimating()
-                    }
-                }.resume()
-            }
-        } else {
-            activityIndicator.stopAnimating()
-            imageView.image = UIImage(named: "placeholder")
+        viewModel.loadImage(for: newsItem) { [weak self] image in
+            self?.imageView.image = image
+            self?.activityIndicator.stopAnimating()
         }
     }
 }

@@ -79,7 +79,7 @@ extension NewsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NewsCell", for: indexPath) as! NewsCell
         let newsItem = viewModel.news[indexPath.item]
-        cell.configure(with: newsItem)
+        cell.configure(with: newsItem, viewModel: viewModel)
         return cell
     }
 }

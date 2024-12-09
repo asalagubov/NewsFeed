@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import UIKit
 
 class NewsViewModel {
     @Published var news: [NewsItem] = []
@@ -41,5 +42,33 @@ class NewsViewModel {
                 self.currentPage += 1
             })
             .store(in: &cancellables)
+    }
+    
+    func loadImage(for newsItem: NewsItem, completion: @escaping (UIImage?) -> Void) {
+        guard let imageUrlString = newsItem.titleImageUrl, let url = URL(string: imageUrlString) else {
+            completion(UIImage(named: "placeholder"))
+            return
+        }
+        
+        let request = URLRequest(url: url)
+        
+        if let cachedResponse = URLCache.shared.cachedResponse(for: request),
+           let cachedImage = UIImage(data: cachedResponse.data) {
+            completion(cachedImage)
+        } else {
+            URLSession.shared.dataTask(with: url) { data, response, _ in
+                guard let data = data, let image = UIImage(data: data), let response = response else {
+                    completion(UIImage(named: "placeholder"))
+                    return
+                }
+                
+                let cachedResponse = CachedURLResponse(response: response, data: data)
+                URLCache.shared.storeCachedResponse(cachedResponse, for: request)
+                
+                DispatchQueue.main.async {
+                    completion(image)
+                }
+            }.resume()
+        }
     }
 }
